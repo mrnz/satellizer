@@ -723,7 +723,7 @@
               deferred.reject({ data: 'Provider Popup Blocked' });
             } else if (popup.popupWindow.closed || popup.popupWindow.closed === undefined) {
               $interval.cancel(polling);
-              deferred.reject({ data: 'Authorization Failed' });
+              deferred.reject({ data: 'Authorization Failed', message: 'Provider Popup was closed' });
             }
           }, 35);
           return deferred.promise;
