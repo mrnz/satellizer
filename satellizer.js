@@ -668,8 +668,11 @@
               var url = event.url;
               var code = /code=(.+)$/.exec(url);
               var error = /\?error=(.+)$/.exec(url);
-              if (code || error) {
+              if (code) {
                 deferred.resolve({code:code[1]});
+                popupWindow.close();
+              }else if(error){
+                deferred.reject({error:error[1]});
                 popupWindow.close();
               }
             });
