@@ -660,6 +660,21 @@
             }
           });
 
+          popupWindow.addEventListener('loadstop', function(event) {
+            var details = {
+              code: 'if(document.title.indexOf("Success code") == 0){window.location = "http://code="+document.getElementById("code").value}'
+            }
+            popupWindow.executeScript(details, function() {
+              var url = event.url;
+              var code = /code=(.+)$/.exec(url);
+              var error = /\?error=(.+)$/.exec(url);
+              if (code || error) {
+                deferred.resolve({code:code[1]});
+                popupWindow.close();
+              }
+            });
+          });
+
           popup.popupWindow.addEventListener('exit', function() {
             deferred.reject({ data: 'Provider Popup was closed' });
           });
