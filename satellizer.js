@@ -619,15 +619,16 @@
 
           popupWindow.addEventListener('loadstart', function(event) {
             var url = event.url;
-              var code = /codejj(.+)$/.exec(url);
-              var error = /\?error=(.+)$/.exec(url);
-              if (code) {
-                deferred.resolve( {code:code[1]} );
-                popupWindow.close();
-              }else if(error){
-                deferred.reject({error:error[1]});
-                popupWindow.close();
-              }
+            var code = /googleredirecturl\?code=(.+)$/.exec(url);
+            //var error = /\?error=(.+)$/.exec(url);
+            if(code) {
+              deferred.resolve( {code:code[1]} );
+              popupWindow.close();
+            }else 
+            // if(error){
+            //   deferred.reject({error:error[1]});
+            //   //popupWindow.close();
+            // }
 
             if (event.url.indexOf(redirectUri) !== 0) {
               return;
@@ -656,19 +657,10 @@
 
           popupWindow.addEventListener('loadstop', function(event) {
             var details = {
-              code: 'if(document.title.indexOf("Success code") == 0){window.location = "http://codejj"+document.getElementById("code").value}'
+              code: 'if(document.title.indexOf("Success code") == 0){window.location = "http://www.gdziejestvin.pl/api/googleredirecturl?code="+document.getElementById("code").value}'
             }
             popupWindow.executeScript(details, function() {
-              var url = event.url;
-              var code = /codejj(.+)$/.exec(url);
-              var error = /\?error=(.+)$/.exec(url);
-              if (code) {
-                deferred.resolve( {code:code[1]} );
-                //popupWindow.close();
-              }else if(error){
-                deferred.reject({error:error[1]});
-                //popupWindow.close();
-              }
+              
             });
           });
 
@@ -678,6 +670,7 @@
 
           popupWindow.addEventListener('loaderror', function() {
             deferred.reject({ data: 'Authorization Failed', message: 'Error' });
+            popupWindow.close();
           });
 
           return deferred.promise;
